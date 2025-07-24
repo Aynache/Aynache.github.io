@@ -1,19 +1,27 @@
-/* Mobile nav toggle */
-const toggle = document.getElementById("menu-toggle");
-const nav    = document.getElementById("navbar");
+/* ===== Mobile nav toggle ===== */
+const toggleBtn = document.getElementById("menu-toggle");
+const nav = document.getElementById("nav");
 
-toggle?.addEventListener("click", () => {
-  nav.classList.toggle("show");
+toggleBtn.addEventListener("click", () => {
+  nav.classList.toggle("open");
+  toggleBtn.classList.toggle("open");
 });
 
-/* Smooth-scroll for in-page links */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener("click", e => {
-    const target = document.querySelector(a.getAttribute("href"));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: "smooth" });
-      nav.classList.remove("show");   // close menu on mobile
-    }
+/* ===== Close nav on link click (mobile) ===== */
+nav.querySelectorAll("a").forEach(link =>
+  link.addEventListener("click", () => nav.classList.remove("open"))
+);
+
+/* ===== Scroll‑fade animation (IntersectionObserver) ===== */
+const faders = document.querySelectorAll(".section, .card");
+const appearOptions = { threshold: 0.1 };
+
+const appearOnScroll = new IntersectionObserver(function(entries, obs) {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add("in-view");
+    obs.unobserve(entry.target);
   });
-});
+}, appearOptions);
+
+faders.forEach(el => appearOnScroll.observe(el));
